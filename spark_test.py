@@ -19,7 +19,6 @@ largeCsvFile = "bigExample.csv"
 SMALL_NUM_REPARTITIONS = 4      # Choose how many partitions to use in each repartitioning strategy for small examples.
 LARGE_NUM_REPARTITIONS = 100    # Choose how many partitions to use in each repartitioning strategy for large examples.
 #LARGE_NUM_RECORDS = 1000        # Choose how many records from the large, fake CA file to use (max: approx 55 million).
-AGG_LEN = 4
 
 def quiet_logs(sc):
     logger = sc._jvm.org.apache.log4j
@@ -113,13 +112,14 @@ def dfAnalysisDriver(sc, mode="small"):
     print(f"*** Executing dataframes analysis driver in mode {mode} ***")
     numRepartitions = LARGE_NUM_REPARTITIONS if mode=="large" else SMALL_NUM_REPARTITIONS
     csvFile = largeCsvFile if mode=="large" else smallCsvFile
+    aggLen = 7 if mode=="large" else 4
 
     sqlContext = SQLContext(sc)
     print(f"Loading {csvFile} into dataframe...")
     df1 = sqlContext.read.format("csv").option("header", "true").load(csvFile)
     df1.printSchema()
 
-    df1 = df1.withColumn("partitionCode", substring("geocode",0,AGG_LEN))                   # Initial df
+    df1 = df1.withColumn("partitionCode", substring("geocode",0,aggLen))                    # Initial df
     df2 = df1.repartition(numRepartitions)                                                  # Default hash code repartitioning
     df3 = df1.repartition(numRepartitions, 'partitionCode').drop('partitionCode')           # hashCode repartition based on partitionCode
     df4 = df1.repartitionByRange(numRepartitions, 'partitionCode').drop('partitionCode')    # range repartition based on partitionCode
