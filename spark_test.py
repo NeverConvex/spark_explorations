@@ -82,19 +82,19 @@ def getAndPrintRddStatistics(df, mode="small"):
     # For each geolevel, how many distinct tract, county, or block codes were in each partition?
     numTracts = rdd.map(lambda partition: (countDistinctGeocodes(partition, geocodeLen=lengths[0]), 1)).reduceByKey(add).collect()
     totalTracts = sum([a*b for a, b in numTracts])
-    print(f"distribution of #tracts per partition, & total (note redundancy):")
+    print(f"distribution of #tracts per partition:")
     print(numTracts)
-    print(f"total: {totalTracts}")
+    print(f"total: {totalTracts}, min: {min([a for a,b in numTracts])}, max: {max([a for a,b in numTracts])}")
     numBlockgroups = rdd.map(lambda partition: (countDistinctGeocodes(partition, geocodeLen=lengths[1]), 1)).reduceByKey(add).collect()
     totalBlockgroups = sum([a*b for a, b in numBlockgroups])
     print(f"distribution of #blockgroups per partition:")
     print(numBlockgroups)
-    print(f"total: {totalBlockgroups}")
+    print(f"total: {totalBlockgroups}, min: {min([a for a,b in numBlockgroups])}, max: {max([a for a,b in numBlockgroups])}")
     numBlocks = rdd.map(lambda partition: (countDistinctGeocodes(partition, geocodeLen=lengths[2]), 1)).reduceByKey(add).collect()
     totalBlocks = sum([a*b for a, b in numBlocks])
     print(f"distribution of #blocks per partition:")
     print(numBlocks)
-    print(f"total: {totalBlocks}")
+    print(f"total: {totalBlocks}, min: {min([a for a,b in numBlocks])}, max: {max([a for a,b in numBlocks])}")
 
     # On avg, for each geolevel, how many partitions was each tract, county, or block code in?
     # (not yet implemented; a little more complicated than distribution of #geounits per partition)
