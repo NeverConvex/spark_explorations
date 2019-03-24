@@ -37,7 +37,7 @@ def sparkOomCheck(sparkCoresMax, sparkExecutorCores, multiArrayEntries, numLarge
     """
 
     cmd = "spark-submit.cmd --master local[2]"
-    cmd += f" --driver-memory 5G --executor-memory {executorMainRAM}M"
+    cmd += f" --driver-memory {2*executorMainRAM}M --executor-memory {executorMainRAM}M"
     cmd += f" --conf spark.driver.maxResultSize=0G "    #--conf spark.executor.memoryOverhead {executorOverheadRAM}G"
     cmd += f" --conf spark.cores.max={sparkCoresMax} --conf spark.executor.cores={sparkExecutorCores}"
     cmd += " spark_RAM_test_mapper.py"
@@ -57,8 +57,8 @@ def main():
     #rddLength, sparkCoresMax, sparkExecutorCores, multiArrayEntries = 1000, 2, 1, 65000000
     rddLength, sparkCoresMax, sparkExecutorCores, multiArrayEntries = 1000, 2, 1, 6500000
     for numParts in (2, 10, 100):
-        for numLargeObjects in (1, 5, 10, 50): # Number of numpy multiarrays per initial RDD element
-            for executorMainRAM in (100, 750): # MB of on-heap RAM per executor
+        for numLargeObjects in (5, 15, 25): # Number of numpy multiarrays per initial RDD element
+            for executorMainRAM in (500, 1000): # MB of on-heap RAM per executor
                 #for executorOverheadRAM in (0.5, 1, 5): # GB of off-heap RAM per executor
                 for executorOverheadRAM in (1,):
                     sparkOomCheck(sparkCoresMax, sparkExecutorCores, multiArrayEntries, numLargeObjects, executorMainRAM, executorOverheadRAM, rddLength, numParts)
