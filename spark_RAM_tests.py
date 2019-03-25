@@ -41,7 +41,8 @@ def sparkOomCheck(sparkCoresMax, sparkExecutorCores, multiArrayEntries, numLarge
     cmd += f" --conf spark.driver.maxResultSize=0G "    #--conf spark.executor.memoryOverhead {executorOverheadRAM}G"
     cmd += f" --conf spark.cores.max={sparkCoresMax} --conf spark.executor.cores={sparkExecutorCores}"
     cmd += " spark_RAM_test_mapper.py"
-    cmd += f" {multiArrayEntries} {numLargeObjects} {rddLength} {numParts}"
+    cmd += f" {multiArrayEntries} {numLargeObjects} {rddLength} {numParts}" # Used by subprocess
+    cmd += f" {2*executorMainRAM}"  # Not used by subprocess, but want it in spark STDOUT/STDERR
 
     print(f"\n\n---------------------------\n\nTrying cmd: {cmd}\n-------------------\n")
     try:
