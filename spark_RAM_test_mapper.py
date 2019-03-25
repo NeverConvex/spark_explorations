@@ -15,7 +15,7 @@ def main():
     print(f"\n\n\n***------------------***\nRunning RAM test mapper with primary args:")
     argNames = ["multiArrayEntries","numLargeObjects","rddLength","numParts","2*executorMainRAM"]
     for i in range(len(argNames)):
-        print(f"{argNames[i]} -> sys.argv[i+1]")
+        print(f"{argNames[i]} -> {sys.argv[i+1]}")
 
     multiArrayEntries, numLargeObjects = int(sys.argv[1]), int(sys.argv[2])
     rddLength, numParts = int(sys.argv[3]), int(sys.argv[4])
